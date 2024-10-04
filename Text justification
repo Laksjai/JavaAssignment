@@ -1,0 +1,65 @@
+import java.util.*;
+
+class TextJustifier {
+    public List<String> fullJustify(String[] words, int maxWidth) {
+        List<String> result = new ArrayList<>();
+        int n = words.length;
+        int i = 0;
+
+        while (i < n) {
+            int lineLength = words[i].length();
+            int j = i + 1;
+
+            while (j < n && lineLength + words[j].length() + (j - i) <= maxWidth) {
+                lineLength += words[j].length();
+                j++;
+            }
+
+            StringBuilder sb = new StringBuilder();
+            int spaceSlots = j - i - 1;
+
+            if (j == n || spaceSlots == 0) {
+                for (int k = i; k < j; k++) {
+                    sb.append(words[k]);
+                    if (k < j - 1) sb.append(' ');
+                }
+                while (sb.length() < maxWidth) sb.append(' ');
+            } else {
+                int spaces = (maxWidth - lineLength) / spaceSlots;
+                int extraSpaces = (maxWidth - lineLength) % spaceSlots;
+
+                for (int k = i; k < j; k++) {
+                    sb.append(words[k]);
+                    if (k < j - 1) {
+                        for (int s = 0; s < spaces + (k - i < extraSpaces ? 1 : 0); s++) {
+                            sb.append(' ');
+                        }
+                    }
+                }
+            }
+
+            result.add(sb.toString());
+            i = j;
+        }
+
+        return result;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        TextJustifier justifier = new TextJustifier();
+        
+        String[] words1 = {"This", "is", "an", "example", "of", "text", "justification."};
+        int maxWidth1 = 16;
+        System.out.println(justifier.fullJustify(words1, maxWidth1));
+
+        String[] words2 = {"What","must","be","acknowledgment","shall","be"};
+        int maxWidth2 = 16;
+        System.out.println(justifier.fullJustify(words2, maxWidth2));
+
+        String[] words3 = {"Science","is","what","we","understand","well","enough","to","explain","to","a","computer.","Art","is","everything","else","we","do"};
+        int maxWidth3 = 20;
+        System.out.println(justifier.fullJustify(words3, maxWidth3));
+    }
+}
